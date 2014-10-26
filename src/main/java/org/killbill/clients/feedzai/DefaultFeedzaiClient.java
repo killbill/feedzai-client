@@ -69,29 +69,35 @@ public class DefaultFeedzaiClient implements FeedzaiClient {
     }
 
 
+    @Override
     public PreviousPaymentResponse getPreviousPayment(String paymentId) throws FeedzaiClientException {
         final PreviousPaymentResponse response =  doCall("GET", String.format("%s/%s", PAYMENTS_URI, paymentId), null, ImmutableMap.<String, String>of(), DEFAULT_HTTP_TIMEOUT_SEC, PreviousPaymentResponse.class);
         return response;
     }
 
 
+    @Override
     public void labelPreviousPayment(String paymentId, LabelRequest request) throws FeedzaiClientException {
         doCall("PUT", String.format("%s/%s%s", PAYMENTS_URI, paymentId, PAYMENTS_LABEL), request, ImmutableMap.<String, String>of(), DEFAULT_HTTP_TIMEOUT_SEC, Response.class);
     }
 
+    @Override
     public void sendHistoricalPayments(HistoricalPayments request) throws FeedzaiClientException {
         doCall("POST", HISTORY_PAYMENTS_URI, request, ImmutableMap.<String, String>of(), DEFAULT_HTTP_TIMEOUT_SEC, Response.class);
     }
 
     // HACK_API 405 Method Not Allowed => Allow: PUT
+    @Override
     public UserStatusResponse getUserStatus(String userId) throws FeedzaiClientException {
         return doCall("GET", String.format("%s/%s%s", USERS_URI, userId, USERS_STATUS), null, ImmutableMap.<String, String>of(), DEFAULT_HTTP_TIMEOUT_SEC, UserStatusResponse.class);
     }
 
+    @Override
     public void blockUser(String userId, StatusRequest request) throws FeedzaiClientException {
         doCall("PUT", String.format("%s/%s%s", USERS_URI, userId, USERS_STATUS), request, ImmutableMap.<String, String>of(), DEFAULT_HTTP_TIMEOUT_SEC, Response.class);
     }
 
+    @Override
     public void sendUserAction(UserActionRequest request) throws FeedzaiClientException {
         doCall("POST", ACTIONS_URI, request, ImmutableMap.<String, String>of(), DEFAULT_HTTP_TIMEOUT_SEC, Response.class);
     }
