@@ -2,6 +2,7 @@ package org.killbill.clients.feedzai;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.annotations.VisibleForTesting;
 
 import java.util.List;
 
@@ -110,12 +111,13 @@ public class PaymentRequestWithTimestamp extends PaymentRequest {
         this.timestamp = timestamp;
     }
 
+    @VisibleForTesting
     public PaymentRequestWithTimestamp(String userId,
                                        Integer amount,
                                        String ip,
                                        String id,
                                        Long timestamp) {
-        super(userId, amount, ip, id);
+        super(userId, amount, ip, id, null, null, null);
         this.timestamp = timestamp;
     }
 
