@@ -171,46 +171,69 @@ public class PaymentRequest {
         this.userDefined = userDefined;
     }
 
-    // For convenience... until we want to populate more fields ;-)
     public PaymentRequest(String userId,
                           Integer amount,
                           String ip,
                           String id,
+                          String transactionType,
+                          String userEmail,
                           String userFullName,
+                          Long userCreatedAt,
+                          String userGender,
+                          String userDateofbirth,
+                          String userPhone,
+                          String userAddressLine1,
+                          String userAddressLine2,
+                          String userZip,
+                          String userCity,
+                          String userRegion,
+                          String userCountry,
+                          String cardHash,
+                          String cardFullname,
+                          String cardExp,
                           String cardCountry,
-                          String billingCountry) {
+                          Integer cardBin,
+                          Integer cardLast4,
+                          String billingPhone,
+                          String billingAddressLine1,
+                          String billingAddressLine2,
+                          String billingZip,
+                          String billingCity,
+                          String billingRegion,
+                          String billingCountry,
+                          Object userDefined) {
         this(userId,
                 amount,
                 ip,
                 id,
                 null,
-                null,
-                null,
-                null,
+                transactionType,
+                false,
+                userEmail,
                 userFullName,
+                userCreatedAt,
+                userGender,
+                userDateofbirth,
+                userPhone,
+                userAddressLine1,
+                userAddressLine2,
+                userZip,
+                userCity,
+                userRegion,
+                userCountry,
                 null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
+                cardHash,
+                cardFullname,
+                cardExp,
                 cardCountry,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
+                cardBin,
+                cardLast4,
+                billingPhone,
+                billingAddressLine1,
+                billingAddressLine2,
+                billingZip,
+                billingCity,
+                billingRegion,
                 billingCountry,
                 null,
                 null,
@@ -226,7 +249,46 @@ public class PaymentRequest {
                 null,
                 null,
                 null,
+                userDefined);
+    }
+
+    // Test
+    public PaymentRequest(String userId,
+                          Integer amount,
+                          String ip,
+                          String id) {
+        this(userId,
+                amount,
+                ip,
+                id,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
                 null);
+
     }
 
 
@@ -422,45 +484,45 @@ public class PaymentRequest {
         return userDefined;
     }
 
-public static class Item {
+    public static class Item {
 
-    private final String itemId;
-    private final Integer quantity;
-    private final String name;
-    private final Integer price;
-    private final String url;
+        private final String itemId;
+        private final Integer quantity;
+        private final String name;
+        private final Integer price;
+        private final String url;
 
-    @JsonCreator
-    public Item(@JsonProperty("itemId") String itemId,
-                @JsonProperty("quantity") Integer quantity,
-                @JsonProperty("name") String name,
-                @JsonProperty("price") Integer price,
-                @JsonProperty("url") String url) {
-        this.itemId = itemId;
-        this.quantity = quantity;
-        this.name = name;
-        this.price = price;
-        this.url = url;
+        @JsonCreator
+        public Item(@JsonProperty("itemId") String itemId,
+                    @JsonProperty("quantity") Integer quantity,
+                    @JsonProperty("name") String name,
+                    @JsonProperty("price") Integer price,
+                    @JsonProperty("url") String url) {
+            this.itemId = itemId;
+            this.quantity = quantity;
+            this.name = name;
+            this.price = price;
+            this.url = url;
+        }
+
+        public String getItemId() {
+            return itemId;
+        }
+
+        public Integer getQuantity() {
+            return quantity;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Integer getPrice() {
+            return price;
+        }
+
+        public String getUrl() {
+            return url;
+        }
     }
-
-    public String getItemId() {
-        return itemId;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-}
 }

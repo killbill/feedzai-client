@@ -29,7 +29,7 @@ public class TestDefaultFeedzaiClient {
     public void testScorePayment() throws FeedzaiClientException {
 
         final String paymentId = "test_pay_" + random.nextLong();
-        final PaymentRequest request = new PaymentRequest("test_cli", 20, "72.21.91.19", paymentId, null, null, null);
+        final PaymentRequest request = new PaymentRequest("test_cli", 20, "72.21.91.19", paymentId);
         final PaymentResponse result = client.scorePayment(request);
 
         final PreviousPaymentResponse previous = client.getPreviousPayment(paymentId);
@@ -46,7 +46,7 @@ public class TestDefaultFeedzaiClient {
     public void testLabelPayment() throws FeedzaiClientException {
 
         final String paymentId = "test_pay_" + random.nextLong();
-        final PaymentRequest request = new PaymentRequest("test_cli", 20, "72.21.91.19", paymentId, null, null, null);
+        final PaymentRequest request = new PaymentRequest("test_cli", 20, "72.21.91.19", paymentId);
         client.scorePayment(request);
 
         client.labelPreviousPayment(paymentId, new LabelRequest("fraud"));
