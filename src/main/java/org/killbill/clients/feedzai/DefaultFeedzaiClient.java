@@ -27,7 +27,6 @@ import java.util.concurrent.TimeoutException;
 
 public class DefaultFeedzaiClient implements FeedzaiClient {
 
-    private final boolean DEBUG = Boolean.parseBoolean(System.getProperty("org.kill-bill.feedzai.debug", "false"));
     public static final int DEFAULT_HTTP_TIMEOUT_SEC = 10;
 
     private final Logger log = LoggerFactory.getLogger(DefaultFeedzaiClient.class);
@@ -51,12 +50,15 @@ public class DefaultFeedzaiClient implements FeedzaiClient {
 
     private final String apiKey;
 
-    public DefaultFeedzaiClient(boolean useSandbox, String apiKey) {
+    private final boolean isPrintRequestsDetails;
+
+    public DefaultFeedzaiClient(boolean useSandbox, String apiKey, boolean isPrintRequestsDetails) {
         final AsyncHttpClientConfig.Builder cfg = new AsyncHttpClientConfig.Builder();
         cfg.setUserAgent(USER_AGENT);
         this.apiKey = apiKey;
         this.httpClient = new AsyncHttpClient(cfg.build());
         this.mapper = new ObjectMapper();
+        this.isPrintRequestsDetails = isPrintRequestsDetails;
         mapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.location = useSandbox ? SANDBOX_LOCATION : PRODUCTION_LOCATION;
@@ -64,14 +66,14 @@ public class DefaultFeedzaiClient implements FeedzaiClient {
 
     @Override
     public PaymentResponse scorePayment(PaymentRequest request) throws FeedzaiClientException {
-        final PaymentResponseExplanation response =  doCall("POST", PAYMENTS_URI, request, ImmutableMap.<String, String>of(), DEFAULT_HTTP_TIMEOUT_SEC, PaymentResponseExplanation.class);
+        final PaymentResponseExplanation response = doCall("POST", PAYMENTS_URI, request, ImmutableMap.<String, String>of(), DEFAULT_HTTP_TIMEOUT_SEC, PaymentResponseExplanation.class);
         return response.getExplanation();
     }
 
 
     @Override
     public PreviousPaymentResponse getPreviousPayment(String paymentId) throws FeedzaiClientException {
-        final PreviousPaymentResponse response =  doCall("GET", String.format("%s/%s", PAYMENTS_URI, paymentId), null, ImmutableMap.<String, String>of(), DEFAULT_HTTP_TIMEOUT_SEC, PreviousPaymentResponse.class);
+        final PreviousPaymentResponse response = doCall("GET", String.format("%s/%s", PAYMENTS_URI, paymentId), null, ImmutableMap.<String, String>of(), DEFAULT_HTTP_TIMEOUT_SEC, PreviousPaymentResponse.class);
         return response;
     }
 
@@ -103,17 +105,16 @@ public class DefaultFeedzaiClient implements FeedzaiClient {
     }
 
 
-
-
-
-
-    private <T> T doCall(final String verb, final String uri, final Object body, final Map<String, String> options, final int timeoutSec, final Class<T> clazz) throws FeedzaiClientException  {
+    private <T> T doCall(final String verb, final String uri, final Object body, final Map<String, String> options, final int timeoutSec, final Class<T> clazz) throws FeedzaiClientException {
         final String url = getFeedzaiUrl(location, uri);
         final AsyncHttpClient.BoundRequestBuilder builder = getBuilderWithHeaderAndQuery(verb, url, apiKey, options);
         if (!"GET".equals(verb) && !"HEAD".equals(verb)) {
             if (body != null) {
                 try {
                     final String bodyJson = mapper.writeValueAsString(body);
+                    if (isPrintRequestsDetails) {
+                        log.info("DefaultFeedzaiClient Sending: " + bodyJson);
+                    }
                     builder.setBody(bodyJson);
                 } catch (JsonProcessingException e) {
                 }
@@ -184,9 +185,9 @@ public class DefaultFeedzaiClient implements FeedzaiClient {
     private <T> T deserializeResponse(final Response response, final Class<T> clazz) throws FeedzaiClientException {
         final T result;
         try {
-            if (DEBUG) {
+            if (isPrintRequestsDetails) {
                 final String content = response.getResponseBody();
-                log.debug("Received: " + content);
+                log.info("DefaultFeedzaiClient Received: " + content);
                 result = mapper.readValue(content, clazz);
             } else {
                 InputStream in = null;

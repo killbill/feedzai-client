@@ -20,7 +20,7 @@ public class TestDefaultFeedzaiClient {
     public void beforeTest() {
         final String apiKey = System.getProperty("org-kill-bill.clients.feedzai.api.key");
         Assert.assertNotNull(apiKey, "Need to specify client API KEY");
-        client = new DefaultFeedzaiClient(true, apiKey);
+        client = new DefaultFeedzaiClient(true, apiKey, false);
         random = new Random();
 
     }
